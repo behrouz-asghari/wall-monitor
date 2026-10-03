@@ -125,30 +125,54 @@ Never run it against production.
 
 ## Vercel setup
 
-1. Push this repository to GitHub (remote: `origin` → `https://github.com/wall-monitor/WallDB.git`).
-2. Import the repository in Vercel (or `vercel link` in the project directory) — use the
-   **existing** project if one is linked; do not create a duplicate.
-3. Add the environment variables for **Production and Preview**:
+Current state (already configured):
+
+- Project: `walldb` (team `behrouz-asgharis-projects`), linked via `.vercel/` (git-ignored)
+- Production: **https://walldb.vercel.app**
+- Environment variables set for Production: `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Config), `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET` (Secret)
+
+To reproduce on another environment:
+
+1. Push this repository to GitHub (remote: `origin`).
+2. `vercel link --project <name>` — reuse an existing project if one is linked.
+3. Add the environment variables for **Production**:
    - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY` (sensitive)
-   - `CRON_SECRET` (sensitive, e.g. `openssl rand -hex 32`)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (store as Config — it is public by design)
+   - `SUPABASE_SERVICE_ROLE_KEY` (Secret)
+   - `CRON_SECRET` (Secret, e.g. `openssl rand -hex 32`)
 4. Deploy (`vercel --prod`).
-5. Cron is configured in `vercel.json`:
 
-   ```json
-   { "crons": [{ "path": "/api/cron/wallgold", "schedule": "* * * * *" }] }
-   ```
+### Cron scheduling (every minute)
 
-   Vercel sends `Authorization: Bearer $CRON_SECRET` automatically when the variable is set.
+The collector endpoint is `/api/cron/wallgold` and always requires
+`Authorization: Bearer $CRON_SECRET`.
 
-   > Note: Vercel's Hobby plan may restrict cron frequency. If per-minute runs are not
-   > available on your plan, schedule an external caller against the same authenticated URL.
+**Important — Vercel plan limits:** Vercel Hobby only allows *daily* native cron jobs, so
+`"schedule": "* * * * *"` in `vercel.json` is rejected at deploy time on that plan. The
+minute-level schedule therefore runs from **GitHub Actions**:
+
+- `.github/workflows/collector-cron.yml` fires `* * * * *` and POSTs to the secured endpoint.
+- The `CRON_SECRET` repository secret holds the same value as the Vercel env var.
+- Current `vercel.json` keeps `"crons": []` for Hobby compatibility.
+
+When the account moves to **Vercel Pro**, restore native cron in one step:
+
+```json
+{ "crons": [{ "path": "/api/cron/wallgold", "schedule": "* * * * *" }] }
+```
+
+…and optionally delete the GitHub Actions workflow. Both schedulers hit the same endpoint;
+the collector is idempotent, so overlapping or delayed runs are harmless.
+
+> GitHub may delay scheduled runs by a minute or two and disables scheduled workflows after
+> ~60 days without repository activity — missed runs are safe, the next run catches up.
+
 6. Verify the collector:
 
    ```bash
-   curl https://<your-domain>/api/health
-   curl -X POST https://<your-domain>/api/cron/wallgold -H "Authorization: Bearer $CRON_SECRET"
+   curl https://walldb.vercel.app/api/health
+   curl -X POST https://walldb.vercel.app/api/cron/wallgold -H "Authorization: Bearer $CRON_SECRET"
    ```
 
    The response should look like:

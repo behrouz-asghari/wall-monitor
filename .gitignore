@@ -49,3 +49,6 @@ supabase/.temp/
 # editor
 .idea/
 .vscode/
+
+.vercel
+.env*
