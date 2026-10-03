@@ -212,8 +212,8 @@ export default async function HealthPage() {
             آخرین اجراهای کلنکتور
           </h2>
           <p className="text-xs text-muted-foreground">
-            زمان‌بندی: <span className="ltr">* * * * *</span> (هر دقیقه، از طریق Vercel Cron) ·
-            احراز هویت با <span className="ltr">CRON_SECRET</span>
+            زمان‌بندی: <span className="ltr">*/5 * * * *</span> (هر ۵ دقیقه، از طریق GitHub
+            Actions) · احراز هویت با <span className="ltr">CRON_SECRET</span>
           </p>
         </div>
         <RunsTable runs={health.recentRuns} />

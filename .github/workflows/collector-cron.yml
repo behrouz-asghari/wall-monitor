@@ -1,12 +1,18 @@
 # ---------------------------------------------------------------------------
-# WallGold collector — minute-level scheduler (GitHub Actions).
+# WallGold collector — 5-minute scheduler (GitHub Actions).
 #
-# Vercel Hobby plans limit *native* cron jobs to daily, so the every-minute
-# schedule lives here instead: it calls the CRON_SECRET-secured collector
-# endpoint on Vercel. The endpoint itself is identical to the Vercel Cron one
-# (same Authorization: Bearer header), so upgrading to Vercel Pro later simply
-# means restoring `"schedule": "* * * * *"` in vercel.json and deleting this
-# workflow — nothing else changes.
+# Vercel Hobby plans limit *native* cron jobs to daily, so the schedule lives
+# here instead: it calls the CRON_SECRET-secured collector endpoint on Vercel.
+# The endpoint itself is identical to the Vercel Cron one (same Authorization:
+# Bearer header), so upgrading to Vercel Pro later simply means restoring
+# `"schedule": "* * * * *"` in vercel.json and deleting this workflow —
+# nothing else changes.
+#
+# Cadence: GitHub's documented floor is "the shortest interval you can run
+# scheduled workflows is once every 5 minutes" — `* * * * *` is accepted
+# syntactically but never registers a schedule (verified: schedules endpoint
+# returns 404 and zero schedule runs). `*/5 * * * *` is the fastest legal
+# native cadence on the free tier.
 #
 # Note: GitHub may delay scheduled runs by a minute or two, and scheduled
 # workflows are disabled automatically after ~60 days of repository
@@ -18,7 +24,7 @@ name: WallGold collector
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 permissions:

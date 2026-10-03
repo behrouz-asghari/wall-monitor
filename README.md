@@ -143,16 +143,19 @@ To reproduce on another environment:
    - `CRON_SECRET` (Secret, e.g. `openssl rand -hex 32`)
 4. Deploy (`vercel --prod`).
 
-### Cron scheduling (every minute)
+### Cron scheduling (every 5 minutes)
 
 The collector endpoint is `/api/cron/wallgold` and always requires
 `Authorization: Bearer $CRON_SECRET`.
 
-**Important — Vercel plan limits:** Vercel Hobby only allows *daily* native cron jobs, so
-`"schedule": "* * * * *"` in `vercel.json` is rejected at deploy time on that plan. The
-minute-level schedule therefore runs from **GitHub Actions**:
+**Important — plan limits:** Vercel Hobby only allows *daily* native cron jobs, so
+`"schedule": "* * * * *"` in `vercel.json` is rejected at deploy time on that plan. And
+GitHub Actions documents a floor of “the shortest interval you can run scheduled workflows
+is once every 5 minutes” — `* * * * *` parses but **never registers** (the schedules API
+returns 404 and no schedule runs are ever created). The fastest legal free-tier cadence
+therefore runs from **GitHub Actions**:
 
-- `.github/workflows/collector-cron.yml` fires `* * * * *` and POSTs to the secured endpoint.
+- `.github/workflows/collector-cron.yml` fires `*/5 * * * *` and POSTs to the secured endpoint.
 - The `CRON_SECRET` repository secret holds the same value as the Vercel env var.
 - Current `vercel.json` keeps `"crons": []` for Hobby compatibility.
 
