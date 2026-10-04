@@ -76,12 +76,7 @@ export function MarketCard({ item }: { item: LatestPriceItem }) {
         </div>
 
         <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-          <span className="ltr">
-            {item.updatedAt ? formatTehranTime(item.updatedAt) : "—"}
-          </span>
-          <span className="truncate" title={item.symbol}>
-            <span className="ltr">{item.symbol}</span>
-          </span>
+          <span className="ltr">{item.updatedAt ? formatTehranTime(item.updatedAt) : "—"}</span>
         </div>
       </CardContent>
     </Card>

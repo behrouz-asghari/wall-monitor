@@ -143,33 +143,38 @@ To reproduce on another environment:
    - `CRON_SECRET` (Secret, e.g. `openssl rand -hex 32`)
 4. Deploy (`vercel --prod`).
 
-### Cron scheduling (every 5 minutes)
+### Scheduling (Cloudflare Workers cron)
 
 The collector endpoint is `/api/cron/wallgold` and always requires
 `Authorization: Bearer $CRON_SECRET`.
 
-**Important — plan limits:** Vercel Hobby only allows *daily* native cron jobs, so
-`"schedule": "* * * * *"` in `vercel.json` is rejected at deploy time on that plan. And
-GitHub Actions documents a floor of “the shortest interval you can run scheduled workflows
-is once every 5 minutes” — `* * * * *` parses but **never registers** (the schedules API
-returns 404 and no schedule runs are ever created). The fastest legal free-tier cadence
-therefore runs from **GitHub Actions**:
+**Where the schedule runs:** a Cloudflare Worker with a cron trigger. GitHub is only the
+source-code repository — GitHub Actions is **not** used anywhere in this project and there
+is no `.github/workflows/` directory. Wrangler CLI is the deployment and Worker management
+mechanism.
 
-- `.github/workflows/collector-cron.yml` fires `*/5 * * * *` and POSTs to the secured endpoint.
-- The `CRON_SECRET` repository secret holds the same value as the Vercel env var.
-- Current `vercel.json` keeps `"crons": []` for Hobby compatibility.
+- Worker: `cloudflare/wallgold-cron/`, configured by `wrangler.jsonc` with
+  `triggers.crons: ["*/5 * * * *"]` (5 minutes — Vercel Hobby caps native cron at daily,
+  so the schedule lives in the Worker instead).
+- The Worker's `scheduled()` handler POSTs to `https://walldb.vercel.app/api/cron/wallgold`
+  with `Authorization: Bearer $CRON_SECRET` and fails the run if the endpoint errors.
+- Secret: `cd cloudflare/wallgold-cron && npx wrangler secret put CRON_SECRET` (same value
+  as the Vercel env var).
+- Deploy: `cd cloudflare/wallgold-cron && npm install && npm run deploy` (→ `wrangler deploy`).
+- Local trigger test: `npm run dev` (`wrangler dev --test-scheduled`), then
+  `curl "http://localhost:8787/__scheduled?cron=*/5+*+*+*+*"`.
 
-When the account moves to **Vercel Pro**, restore native cron in one step:
+**Why not Vercel native cron:** Vercel Hobby only allows *daily* native cron jobs, so
+`"schedule": "* * * * *"` in `vercel.json` is rejected at deploy time on that plan. Current
+`vercel.json` keeps `"crons": []` for Hobby compatibility. On Vercel Pro, restore native
+cron in one step:
 
 ```json
 { "crons": [{ "path": "/api/cron/wallgold", "schedule": "* * * * *" }] }
 ```
 
-…and optionally delete the GitHub Actions workflow. Both schedulers hit the same endpoint;
-the collector is idempotent, so overlapping or delayed runs are harmless.
-
-> GitHub may delay scheduled runs by a minute or two and disables scheduled workflows after
-> ~60 days without repository activity — missed runs are safe, the next run catches up.
+Either way the Worker and Vercel cron hit the same endpoint; the collector is idempotent,
+so overlapping or delayed runs are harmless — the next run always catches up.
 
 6. Verify the collector:
 

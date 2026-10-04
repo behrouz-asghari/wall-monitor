@@ -90,7 +90,7 @@ export default async function HistoryPage({
       <section aria-labelledby="history-table-heading" className="space-y-3">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="history-table-heading" className="text-sm font-semibold">
-            رکوردهای قیمت — <span className="ltr">{query.symbol}</span> ({symbolLabel(query.symbol)})
+            رکوردهای قیمت — {symbolLabel(query.symbol)}
           </h2>
           <p className="text-xs text-muted-foreground">
             {range.meta.label} · تفکیک {range.bucket === "minute" ? "دقیقه" : range.bucket === "hour" ? "ساعت" : "روز"}

@@ -61,7 +61,7 @@ async function FlowStatsSection() {
         <StatCard
           label="زمان مرجع منبع"
           value={<span className="text-base">{formatTehranDateTime(live.sourceUpdatedAt)}</span>}
-          sub={<span className="ltr">updatedAt (source)</span>}
+          sub="به‌روزرسانی اعلام‌شده از منبع"
         />
         <StatCard
           label="اعتبار تا"
@@ -70,7 +70,7 @@ async function FlowStatsSection() {
               {live.validUntil ? formatTehranDateTime(live.validUntil) : "—"}
             </span>
           }
-          sub={<span className="ltr">validUntil (source)</span>}
+          sub="زمان اعتبار اعلام‌شده از منبع"
         />
       </div>
     </div>
@@ -97,7 +97,7 @@ export default function FlowsPage() {
     <div className="space-y-6">
       <PageHeader
         title="جریان‌ها"
-        description="واریز، برداشت و خالص جریان — net_flow همیشه در زمان پرس‌وجو محاسبه می‌شود."
+        description="واریز، برداشت و خالص جریان — خالص جریان همیشه در زمان پرس‌وجو محاسبه می‌شود."
       />
 
       <Suspense fallback={<StatsSkeleton />}>
@@ -111,11 +111,8 @@ export default function FlowsPage() {
       </section>
 
       <p className="text-xs leading-relaxed text-muted-foreground">
-        فرمول:{" "}
-        <span className="ltr" dir="ltr">
-          net_flow = deposit_last_hour_volume_toman − withdraw_last_hour_volume_toman
-        </span>{" "}
-        — این مقدار ذخیره نمی‌شود و همیشه از ستون‌های مرجع محاسبه می‌گردد.
+        فرمول: خالص جریان = واریز (آخرین ساعت) − برداشت (آخرین ساعت) — این مقدار ذخیره نمی‌شود و
+        همیشه از داده‌های مرجع محاسبه می‌گردد.
       </p>
     </div>
   );

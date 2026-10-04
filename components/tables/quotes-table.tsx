@@ -32,20 +32,16 @@ function DirectionCell({ item }: { item: LatestPriceItem }) {
 }
 
 /**
- * Full quote table for the latest snapshot — every indicator WallGold sent,
- * including symbols we don't recognize (unknown symbols keep their raw key).
+ * Full quote table for the latest snapshot — every indicator WallGold sent.
+ * Only the Persian display label is rendered; the raw API field key is kept as
+ * the row identity but never shown to the user.
  */
 export function QuotesTable({ items }: { items: LatestPriceItem[] }) {
   const columns: Column<LatestPriceItem>[] = [
     {
       key: "symbol",
       header: "نماد",
-      cell: (item) => (
-        <div className="flex flex-col">
-          <span className="font-medium">{item.label}</span>
-          <span className="ltr text-xs text-muted-foreground">{item.symbol}</span>
-        </div>
-      ),
+      cell: (item) => <span className="font-medium">{item.label}</span>,
     },
     {
       key: "price",
@@ -77,12 +73,6 @@ export function QuotesTable({ items }: { items: LatestPriceItem[] }) {
       header: "به‌روزرسانی",
       className: "numeric text-start text-muted-foreground",
       cell: (item) => (item.updatedAt ? formatTehranTime(item.updatedAt) : "—"),
-    },
-    {
-      key: "symbolKey",
-      header: "کلید منبع",
-      className: "ltr text-xs text-muted-foreground",
-      cell: (item) => item.symbol,
     },
   ];
 

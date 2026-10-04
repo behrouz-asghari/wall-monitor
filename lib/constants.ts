@@ -111,8 +111,15 @@ export const FEATURED_SYMBOLS: SymbolMeta[] = [
   { symbol: "rob", label: "ربع سکه" },
 ];
 
-/** Known symbol -> Persian label mapping (falls back to the raw symbol key). */
+/**
+ * Known symbol -> Persian display label mapping.
+ *
+ * The API/DB keys (`symbol`) are never renamed — they stay exactly as WallGold
+ * sends them. This map is display-only: the UI must render these Persian
+ * labels and must never expose the raw technical field names to the user.
+ */
 export const SYMBOL_LABELS: Record<string, string> = {
+  // Metals & coins
   gold18k: "طلای ۱۸",
   ons: "اونس طلا",
   silver: "نقره",
@@ -122,27 +129,67 @@ export const SYMBOL_LABELS: Record<string, string> = {
   palladium: "پالادیوم",
   geram24: "مثقال طلای ۲۴ عیار",
   gerami: "گرمی طلا",
-  gold_mini_size: "مینی‌سایز طلا",
+  gold_mini_size: "طلای آب شده",
   mesghal: "مثقال",
   gold_futures: "آتی طلا",
   gold_17_transfer: "طلای ۱۷ انتقالی",
   sekee: "سکه امامی",
-  sekeb: "سکه بهاری",
+  sekeb: "سکه بهار آزادی",
   nim: "نیم سکه",
   rob: "ربع سکه",
+
+  // حباب (bubble)
+  coin_blubber: "حباب سکه",
+  sekeb_blubber: "حباب سکه بهار آزادی",
+  nim_blubber: "حباب نیم سکه",
+  rob_blubber: "حباب ربع سکه",
+  gerami_blubber: "حباب سکه گرمی",
+
+  // Currencies
   price_dollar_rl: "دلار",
   price_eur: "یورو",
   price_aed: "درهم",
   price_gbp: "پوند",
-  price_try: "لیر",
-  price_chf: "فرانک",
-  price_cny: "یوان",
-  price_jpy: "ین",
-  price_rub: "روبل",
+  price_afn: "افغانی افغانستان",
+  price_amd: "درام ارمنستان",
+  price_aud: "دلار استرالیا",
+  price_azn: "منات آذربایجان",
+  price_bhd: "دینار بحرین",
+  price_cad: "دلار کانادا",
+  price_chf: "فرانک سوئیس",
+  price_cny: "یوان چین",
+  price_dkk: "کرون دانمارک",
+  price_gel: "لاری گرجستان",
+  price_hkd: "دلار هنگ کنگ",
+  price_inr: "روپیه هند",
+  price_iqd: "دینار عراق",
+  price_jpy: "ین ژاپن",
+  price_kgs: "سوم قرقیزستان",
+  price_krw: "وون کره جنوبی",
+  price_kwd: "دینار کویت",
+  price_myr: "رینگیت مالزی",
+  price_nok: "کرون نروژ",
+  price_nzd: "دلار نیوزیلند",
+  price_omr: "ریال عمان",
+  price_pkr: "روپیه پاکستان",
+  price_qar: "ریال قطر",
+  price_rub: "روبل روسیه",
+  price_sar: "ریال عربستان سعودی",
+  price_sek: "کرون سوئد",
+  price_sgd: "دلار سنگاپور",
+  price_syp: "لیره سوریه",
+  price_thb: "بات تایلند",
+  price_tjs: "سامانی تاجیکستان",
+  price_tmt: "منات ترکمنستان",
+  price_try: "لیر ترکیه",
 };
 
+/**
+ * Persian display label for a symbol. Unknown/future symbols get a neutral
+ * Persian placeholder — the raw API key is never surfaced to the user.
+ */
 export function symbolLabel(symbol: string): string {
-  return SYMBOL_LABELS[symbol] ?? symbol;
+  return SYMBOL_LABELS[symbol] ?? "نماد ناشناخته";
 }
 
 /** Collector cadence (target: once per minute, no aggressive polling). */

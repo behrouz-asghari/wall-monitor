@@ -14,8 +14,8 @@ export interface SymbolOption {
 }
 
 /**
- * Symbol picker. Shows the configured Persian label for known symbols and the
- * raw key for unknown/future indicators (which are still fully collected).
+ * Symbol picker. Renders only the configured Persian label for each option —
+ * raw API field keys are never shown to the user.
  */
 export function SymbolSelector({
   symbols,
@@ -41,7 +41,6 @@ export function SymbolSelector({
         {symbols.map((option) => (
           <SelectItem key={option.symbol} value={option.symbol}>
             <span>{option.label}</span>
-            <span className="ltr mr-2 text-xs text-muted-foreground">({option.symbol})</span>
           </SelectItem>
         ))}
       </SelectContent>

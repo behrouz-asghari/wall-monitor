@@ -57,9 +57,9 @@ async function QuotesSection() {
       <QuotesTable items={items} />
 
       <p className="text-xs leading-relaxed text-muted-foreground">
-        مقادیر خام دقیقاً مطابق منبع ذخیره می‌شوند؛ متغیرهای <span className="ltr">divide10</span> و{" "}
-        <span className="ltr">decimals</span> صرفاً برای نمایش به کار می‌روند و مقدار ذخیره‌شده را
-        تغییر نمی‌دهند. نمادهای ناشناخته منبع نیز کامل نگه‌داری می‌شوند.
+        مقادیر خام دقیقاً مطابق منبع ذخیره می‌شوند؛ ضریب نمایش و تعداد اعشار فقط برای نمایش به کار
+        می‌روند و مقدار ذخیره‌شده را تغییر نمی‌دهند. نمادهای ناشناخته منبع نیز کامل نگه‌داری
+        می‌شوند.
       </p>
     </section>
   );

@@ -167,7 +167,7 @@ export default async function HealthPage() {
         </h2>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <StatCard
-            label="livedata — source_updated_at"
+            label="livedata — به‌روزرسانی منبع"
             value={
               health.lastSourceUpdatedAt ? (
                 <span className="text-base">{formatTehranDateTime(health.lastSourceUpdatedAt)}</span>
@@ -178,7 +178,7 @@ export default async function HealthPage() {
             dir="ltr"
           />
           <StatCard
-            label="prices — last_realtime_ts"
+            label="prices — آخرین زمان لحظه‌ای منبع"
             value={
               lastPriceSource ? (
                 <span className="text-base">{formatTehranDateTime(lastPriceSource)}</span>
@@ -189,7 +189,7 @@ export default async function HealthPage() {
             dir="ltr"
           />
           <StatCard
-            label="قیمت‌ها — collected_at"
+            label="قیمت‌ها — زمان جمع‌آوری"
             value={
               health.lastCollectedAt ? (
                 <span className="text-base">{formatTehranDateTime(health.lastCollectedAt)}</span>
@@ -212,8 +212,8 @@ export default async function HealthPage() {
             آخرین اجراهای کلنکتور
           </h2>
           <p className="text-xs text-muted-foreground">
-            زمان‌بندی: <span className="ltr">*/5 * * * *</span> (هر ۵ دقیقه، از طریق GitHub
-            Actions) · احراز هویت با <span className="ltr">CRON_SECRET</span>
+            زمان‌بندی: <span className="ltr">*/5 * * * *</span> (هر ۵ دقیقه، از طریق Cloudflare
+            Worker) · احراز هویت با <span className="ltr">CRON_SECRET</span>
           </p>
         </div>
         <RunsTable runs={health.recentRuns} />
