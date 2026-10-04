@@ -22,7 +22,7 @@ export default function HomePage() {
             <p className="text-sm text-muted-foreground">مانیتورینگ داده‌های بازار WallGold</p>
           </div>
         </div>
-        <Badge variant="secondary">Vercel Cron · هر دقیقه</Badge>
+        <Badge variant="secondary">Cloudflare Worker Cron · هر 5 دقیقه</Badge>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
