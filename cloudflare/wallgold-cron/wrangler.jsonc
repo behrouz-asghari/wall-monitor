@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+
+  "name": "wallgold-cron",
+
+  "main": "src/index.ts",
+
+  "compatibility_date": "2026-10-03",
+
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
